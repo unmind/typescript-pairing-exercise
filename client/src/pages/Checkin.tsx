@@ -15,7 +15,7 @@ const RatingLabel = styled.label`
   margin-right: 50px;
 `;
 
-const Rating = styled.input.attrs({ type: 'radio' })`
+const Rating = styled.input.attrs({ type: "radio" })`
   margin: 0 10px;
 `;
 
@@ -45,37 +45,35 @@ const Checkin = () => {
 
   const onRatingSelect = (event: ChangeEvent<HTMLInputElement>) => {
     setRating(+event.target.value);
-  };  
+  };
   const onCommentUpdate = (e: React.FormEvent<HTMLTextAreaElement>) => {
     setComment(e.currentTarget.value);
   };
 
-  const onSubmit = () => {
-    axiosInstance.post("/checkin", {
-      comment,
-      rating,
-    });
-  };
-
   return (
     <Container>
-<RatingWrapper>
-      <RatingLabel>Mood Rating</RatingLabel>
-      {[1, 2, 3, 4, 5].map((value) => (
-        <RatingOptionLabel key={value}>
-          {value}
-          <Rating name="rating" value={value} checked={rating === value} onChange={onRatingSelect} />
-        </RatingOptionLabel>
-      ))}
-    </RatingWrapper>      
+      <RatingWrapper>
+        <RatingLabel>Mood Rating</RatingLabel>
+        {[1, 2, 3, 4, 5].map((value) => (
+          <RatingOptionLabel key={value}>
+            {value}
+            <Rating
+              name='rating'
+              value={value}
+              checked={rating === value}
+              onChange={onRatingSelect}
+            />
+          </RatingOptionLabel>
+        ))}
+      </RatingWrapper>
       <Comment
-        aria-label="comment-box"
-        placeholder="Note down any comments on your mood that come to mind"
+        aria-label='comment-box'
+        placeholder='Note down any comments on your mood that come to mind'
         onChange={onCommentUpdate}
       >
         {comment}
       </Comment>
-      <Button aria-label="submit-button" disabled={rating === null} onClick={onSubmit}>
+      <Button aria-label='submit-button' disabled={rating === null}>
         Submit
       </Button>
     </Container>
