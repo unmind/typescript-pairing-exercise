@@ -1,28 +1,33 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import axiosInstance from "../libs/axios";
 
-const RatingWrapper = styled.div`
+const MoodWrapper = styled.fieldset`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin: 50px 50px;
+  margin-top: 50px;
+  border: 0px;
 `;
 
-const RatingLabel = styled.label`
+const MoodWrapperLabel = styled.legend`
   font-size: 24px;
   margin-right: 50px;
 `;
 
-const Rating = styled.input.attrs({ type: "radio" })`
-  margin: 0 10px;
+const MoodItems = styled.ul`
+  padding-inline-start: 0px;
 `;
 
-const RatingOptionLabel = styled.label`
+const MoodItemWrapper = styled.li`
+  display: block;
+`;
+
+const MoodLabel = styled.label`
   display: inline-block;
   margin: 0 10px;
 `;
+
 const Comment = styled.textarea`
   padding: 50px;
   width: 400px;
@@ -40,11 +45,23 @@ const Container = styled.div`
 `;
 
 const Checkin = () => {
-  const [rating, setRating] = useState<number | null>(null);
+  const [moods, setMoods] = useState<{ string: boolean } | {}>({});
   const [comment, setComment] = useState<string>();
 
-  const onRatingSelect = (event: ChangeEvent<HTMLInputElement>) => {
-    setRating(+event.target.value);
+  const moodOptions: string[] = [
+    "Happy",
+    "Sad",
+    "Stressed",
+    "Angry",
+    "Anxious",
+    "Focused",
+  ];
+
+  const onMoodSelect = (e: React.FormEvent<HTMLInputElement>) => {
+    setMoods({
+      ...moods,
+      [e.currentTarget.name.toLowerCase()]: e.currentTarget.checked,
+    });
   };
   const onCommentUpdate = (e: React.FormEvent<HTMLTextAreaElement>) => {
     setComment(e.currentTarget.value);
@@ -52,20 +69,23 @@ const Checkin = () => {
 
   return (
     <Container>
-      <RatingWrapper>
-        <RatingLabel>Mood Rating</RatingLabel>
-        {[1, 2, 3, 4, 5].map((value) => (
-          <RatingOptionLabel key={value}>
-            {value}
-            <Rating
-              name='rating'
-              value={value}
-              checked={rating === value}
-              onChange={onRatingSelect}
-            />
-          </RatingOptionLabel>
-        ))}
-      </RatingWrapper>
+      <h1>Check in</h1>
+      <MoodWrapper>
+        <MoodWrapperLabel>Mood</MoodWrapperLabel>
+        <MoodItems>
+          {moodOptions.map((value) => (
+            <MoodItemWrapper key={value.toLowerCase()}>
+              <input
+                type='checkbox'
+                id={value.toLowerCase()}
+                name={value.toLowerCase()}
+                onChange={onMoodSelect}
+              />
+              <MoodLabel htmlFor={value.toLowerCase()}>{value}</MoodLabel>
+            </MoodItemWrapper>
+          ))}
+        </MoodItems>
+      </MoodWrapper>
       <Comment
         aria-label='comment-box'
         placeholder='Note down any comments on your mood that come to mind'
@@ -73,7 +93,7 @@ const Checkin = () => {
       >
         {comment}
       </Comment>
-      <Button aria-label='submit-button' disabled={rating === null}>
+      <Button aria-label='submit-button' disabled={!comment}>
         Submit
       </Button>
     </Container>
